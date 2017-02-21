@@ -7,7 +7,7 @@ class TasksController < ApplicationController
   end
 
   def create
-    @task = Task.new(article_params)
+    @task = Task.new_from_form(article_params)
 
     if @task.save
       redirect_to :tasks
