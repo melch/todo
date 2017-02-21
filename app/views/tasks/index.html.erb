@@ -1,0 +1,18 @@
+<h1>Tasks#index</h1>
+<table>
+  <% @tasks.each do |task| %>
+    <tr>
+      <td>
+        <%= task.name %>
+      </td>
+      <td>
+        <%= link_to 'Delete',
+          task_path(task),
+          method: :delete,
+          data: { confirm: 'Permanently Destroy This Todo Item?' }
+        %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+<%= link_to "Create New Task", new_task_path %>
