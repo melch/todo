@@ -1,13 +1,15 @@
 class TasksController < ApplicationController
   def index
-    @show_completed = !!params[:show_completed]
+    @show_completed = !params[:show_completed].nil?
     @tasks = Task
       .order("created_at DESC")
       .show_completed(@show_completed)
       .limit(20)
   end
 
-  def new; end
+  def new
+    @task = Task.new
+  end
 
   def create
     @task = Task.new_from_form(article_params)
@@ -15,7 +17,7 @@ class TasksController < ApplicationController
     if @task.save
       redirect_to :tasks
     else
-      render plain: params.inspect
+      render :new
     end
   end
 

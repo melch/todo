@@ -1,6 +1,14 @@
 <div class='container'>
   <h1>Create A New ToDo Item</h1>
 
+  <% if @task.errors.any? %>
+    <div class="alert alert-danger" role="alert">
+      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+      <span class="sr-only">Error:</span>
+      <%= @task.errors.full_messages.join(', ') %>
+    </div>
+  <% end %>
+
   <%= form_for :task, url: tasks_path do |f| %>
     <p>
       <%= f.label :name %><br>
@@ -18,7 +26,8 @@
     </p>
 
     <p>
-      <%= f.submit %>
+      <%= f.submit %><br>
+      <%= link_to 'Cancel', tasks_path %>
     </p>
   <% end %>
 </div>

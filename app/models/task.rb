@@ -9,6 +9,10 @@ class Task < ApplicationRecord
     end
   }
 
+  def completed
+    !completed_at.nil?
+  end
+
   def self.new_from_form(attributes = nil)
     new(transmorgrify_completed(attributes))
   end
