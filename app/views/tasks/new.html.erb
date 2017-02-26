@@ -27,7 +27,10 @@
 
     <p>
       <%= f.submit %><br>
-      <%= link_to 'Cancel', tasks_path %>
+      <%= link_to 'Cancel',
+        tasks_path,
+        data: { confirm: 'Leave this page and lose potential changes?' }
+      %>
     </p>
   <% end %>
 </div>
