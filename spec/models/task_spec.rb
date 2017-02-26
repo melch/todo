@@ -18,8 +18,12 @@ RSpec.describe Task, :type => :model do
     it 'should set completed_at if completed true is passed' do
       now = Time.now
       Timecop.freeze(now) do
-        expect(Task.new_from_form(completed: true).completed_at).to eq(now)
+        expect(Task.new_from_form(completed: '1').completed_at).to eq(now)
       end
+    end
+
+    it 'should leave completed_at nil if "0" is passed' do
+      expect(Task.new_from_form(completed: '0').completed_at).to be nil
     end
 
     it 'should handle nil attributes' do
