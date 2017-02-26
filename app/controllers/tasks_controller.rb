@@ -16,6 +16,17 @@ class TasksController < ApplicationController
     end
   end
 
+  def update
+    @task = Task.find(params[:id])
+    @task.update_from_form(article_params)
+
+    if @task.save
+      redirect_to :tasks
+    else
+      render plain: params.inspect
+    end
+  end
+
   def show
     @task = Task.find(params[:id])
   end

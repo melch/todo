@@ -3,7 +3,10 @@
   <% @tasks.each do |task| %>
     <tr>
       <td>
-        <%= !!task.completed_at %>
+        <%= form_for :task, url: task_path(task), method: :patch do |f| %>
+          <%= f.check_box :completed, { checked: !!task.completed_at } %>
+          <%= f.submit %>
+        <% end %>
       </td>
       <td>
         <%= task.name %>
