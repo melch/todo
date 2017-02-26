@@ -1,0 +1,9 @@
+inherit_from: /Users/melch/.rubocop.yml
+
+AllCops:
+  Exclude:
+    - 'config/**/*'
+    - 'Rakefile'
+
+Style/Documentation:
+  Enabled: false

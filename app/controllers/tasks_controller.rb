@@ -3,8 +3,7 @@ class TasksController < ApplicationController
     @tasks = Task.all.order("created_at DESC").limit(10)
   end
 
-  def new
-  end
+  def new; end
 
   def create
     @task = Task.new_from_form(article_params)
@@ -39,6 +38,7 @@ class TasksController < ApplicationController
   end
 
   private
+
   def article_params
     params.require(:task).permit(:name, :description, :completed)
   end
