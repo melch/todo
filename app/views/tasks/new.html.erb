@@ -1,36 +1,5 @@
 <div class='container'>
   <h1>Create A New ToDo Item</h1>
 
-  <% if @task.errors.any? %>
-    <div class="alert alert-danger" role="alert">
-      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-      <span class="sr-only">Error:</span>
-      <%= @task.errors.full_messages.join(', ') %>
-    </div>
-  <% end %>
-
-  <%= form_for :task, url: tasks_path do |f| %>
-    <p>
-      <%= f.label :name %><br>
-      <%= f.text_field :name, autofocus: true %>
-    </p>
-
-    <p>
-      <%= f.label :description %><br>
-      <%= f.text_area :description %>
-    </p>
-
-    <p>
-      <%= f.label :completed %><br>
-      <%= f.check_box :completed %>
-    </p>
-
-    <p>
-      <%= f.submit %><br>
-      <%= link_to 'Cancel',
-        tasks_path,
-        data: { confirm: 'Leave this page and lose potential changes?' }
-      %>
-    </p>
-  <% end %>
+  <%= render partial: 'edit_form', locals: { task: @task, path: tasks_path, method: :post } %>
 </div>
