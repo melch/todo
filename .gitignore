@@ -61,3 +61,4 @@ bower.json
 
 # Ignore editor artifacts
 *.swp
+*.swo
