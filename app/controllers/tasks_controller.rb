@@ -1,8 +1,9 @@
 class TasksController < ApplicationController
   def index
+    @show_completed = !!params[:show_completed]
     @tasks = Task
       .order("created_at DESC")
-      .show_completed(params[:show_completed])
+      .show_completed(@show_completed)
       .limit(20)
   end
 

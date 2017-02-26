@@ -1,41 +1,45 @@
-<h1>Things To Do</h1>
+<div class='container'>
+  <h1>Things To Do</h1>
 
-<div class="btn-group" data-toggle="buttons">
-  <%= link_to 'hide completed',
-    tasks_path,
-    method: :get,
-    class: 'btn btn-outline-secondary btn-sm active'
-  %>
-  <%= link_to 'show completed',
-    tasks_path(show_completed: true),
-    method: :get,
-    class: 'btn btn-outline-secondary btn-sm'
-  %>
+  <div class="row justify-content-end">
+    <div class="btn-group" data-toggle="buttons">
+      <%= link_to 'hide completed',
+        tasks_path,
+        method: :get,
+        class: 'btn btn-outline-secondary btn-sm'
+      %>
+      <%= link_to 'show completed',
+        tasks_path(show_completed: true),
+        method: :get,
+        class: 'btn btn-outline-secondary btn-sm'
+      %>
+    </div>
+  </div>
+
+  <table class='table'>
+    <% @tasks.each do |task| %>
+      <tr>
+        <td>
+          <%= form_for :task, url: task_path(task), method: :patch do |f| %>
+            <%= f.check_box :completed, { checked: !!task.completed_at } %>
+            <%= f.submit %>
+          <% end %>
+        </td>
+        <td>
+          <%= task.name %>
+        </td>
+        <td>
+          <%= link_to 'view details', task_path(task) %>
+        </td>
+        <td>
+          <%= link_to 'Delete',
+            task_path(task),
+            method: :delete,
+            data: { confirm: 'Permanently Destroy This Todo Item?' }
+          %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+  <%= link_to "Create New Task", new_task_path %>
 </div>
-
-<table class='table'>
-  <% @tasks.each do |task| %>
-    <tr>
-      <td>
-        <%= form_for :task, url: task_path(task), method: :patch do |f| %>
-          <%= f.check_box :completed, { checked: !!task.completed_at } %>
-          <%= f.submit %>
-        <% end %>
-      </td>
-      <td>
-        <%= task.name %>
-      </td>
-      <td>
-        <%= link_to 'view details', task_path(task) %>
-      </td>
-      <td>
-        <%= link_to 'Delete',
-          task_path(task),
-          method: :delete,
-          data: { confirm: 'Permanently Destroy This Todo Item?' }
-        %>
-      </td>
-    </tr>
-  <% end %>
-</table>
-<%= link_to "Create New Task", new_task_path %>
