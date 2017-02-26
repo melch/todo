@@ -7,26 +7,28 @@
 <% end %>
 
 <%= form_for :task, url: path, method: method do |f| %>
-  <p>
-    <%= f.label :name %><br>
-    <%= f.text_field :name, autofocus: true %>
-  </p>
+  <div class='form-group'>
+    <%= f.label :name %>
+    <%= f.text_field :name, autofocus: true, class: 'form-control' %>
+  </div>
 
-  <p>
-    <%= f.label :description %><br>
-    <%= f.text_area :description %>
-  </p>
+  <div class='form-group'>
+    <%= f.label :description %>
+    <%= f.text_area :description, class: 'form-control' %>
+  </div>
 
-  <p>
-    <%= f.label :completed %><br>
-    <%= f.check_box :completed %>
-  </p>
+  <div class='form-group'>
+    <div class="form-check">
+      <%= f.check_box :completed, class: 'checkbox' %>
+      <%= f.label :completed, class: 'checkbox' %>
+    </div>
+  </div>
 
-  <p>
+  <div class='form-group'>
     <%= f.submit %><br>
     <%= link_to 'Cancel',
       tasks_path,
       data: { confirm: 'Leave this page and lose potential changes?' }
     %>
-  </p>
+  </div>
 <% end %>
