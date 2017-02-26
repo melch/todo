@@ -1,6 +1,9 @@
 class TasksController < ApplicationController
   def index
-    @tasks = Task.all.order("created_at DESC").limit(10)
+    @tasks = Task
+      .order("created_at DESC")
+      .show_completed(params[:show_completed])
+      .limit(20)
   end
 
   def new; end

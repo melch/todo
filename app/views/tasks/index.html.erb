@@ -1,4 +1,18 @@
-<h1>Tasks#index</h1>
+<h1>Things To Do</h1>
+
+<div class="btn-group" data-toggle="buttons">
+  <%= link_to 'hide completed',
+    tasks_path,
+    method: :get,
+    class: 'btn btn-outline-secondary btn-sm active'
+  %>
+  <%= link_to 'show completed',
+    tasks_path(show_completed: true),
+    method: :get,
+    class: 'btn btn-outline-secondary btn-sm'
+  %>
+</div>
+
 <table class='table'>
   <% @tasks.each do |task| %>
     <tr>

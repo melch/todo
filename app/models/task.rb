@@ -1,6 +1,14 @@
 class Task < ApplicationRecord
   validates :name, uniqueness: true
 
+  scope :show_completed, ->(show_completed) {
+    if show_completed
+      all
+    else
+      where(completed_at: nil)
+    end
+  }
+
   def self.new_from_form(attributes = nil)
     new(transmorgrify_completed(attributes))
   end
