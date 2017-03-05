@@ -43,6 +43,23 @@ RSpec.describe Task, type: :model do
   end
 
   describe '#update_with_side_effects' do
+    it 'should set name, description, and completed at' do
+      name = "Write a Todo App"
+      description = "then iterate on it"
+      position = Task.next_position
+      attrs = {
+        description: description,
+        name: name,
+        completed: false,
+      }
+
+      task = described_class.new.update_with_side_effects(attrs)
+      expect(task.position).to eq position
+      expect(task.name).to eq name
+      expect(task.description).to eq description
+      expect(task.completed_at).to eq nil
+    end
+
     it 'should assign position if not completed' do
       task = described_class.create!(name: "update me", position: 3)
       updated_task = task.update_with_side_effects(name: 'still not done')

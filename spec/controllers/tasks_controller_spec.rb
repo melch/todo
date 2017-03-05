@@ -12,17 +12,25 @@ RSpec.describe TasksController, type: :controller do
 
   describe "POST #create" do
     it "returns http success" do
+      description = "then iterate on it"
+      name = "Write a Todo App"
+      position = Task.next_position
       expect do
         params = {
           task: {
             created: false,
-            description: "then iterate on it",
-            name: "Write a Todo App",
+            description: description,
+            name: name,
           },
         }
         post :create, params: params
         expect(response).to redirect_to(:tasks)
       end.to change { Task.count }.by(1)
+      task = Task.last
+      expect(task.description).to eq description
+      expect(task.name).to eq name
+      expect(task.position).to eq position
+      expect(task.completed_at).to eq nil
     end
   end
 end

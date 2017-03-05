@@ -15,6 +15,7 @@ class Task < ApplicationRecord
 
   def update_with_side_effects(attrs)
     transaction do
+      self.attributes = attrs.except(:completed)
       self.completed_at = new_completed_at(attrs[:completed])
       self.position = new_position(attrs)
 
