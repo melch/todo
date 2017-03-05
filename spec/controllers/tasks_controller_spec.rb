@@ -10,14 +10,6 @@ RSpec.describe TasksController, type: :controller do
     end
   end
 
-  describe "GET #show" do
-    it "returns http success" do
-      task = Task.create!(name: "Test actions")
-      get :show, id: task.id
-      expect(response).to have_http_status(:success)
-    end
-  end
-
   describe "POST #create" do
     it "returns http success" do
       expect do

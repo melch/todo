@@ -71,7 +71,11 @@ RSpec.describe Task, type: :model do
     it 'should return maximum position if a task with a position exits' do
       described_class.create!(name: "first psot!1", position: 1)
       described_class.create!(name: "interesting dialogue", position: 2)
-      described_class.create!(name: "For your record only", position: nil, completed_at: Time.now)
+      described_class.create!(
+        name: "For your record only",
+        position: nil,
+        completed_at: Time.now
+      )
       expect(described_class.max_position).to eq 2
     end
   end
@@ -84,7 +88,8 @@ RSpec.describe Task, type: :model do
     end
 
     it 'should clear position if completed' do
-      task = described_class.new_with_side_effects(base_attrs.merge(completed: "1"))
+      completed_attrs = base_attrs.merge(completed: "1")
+      task = described_class.new_with_side_effects(completed_attrs)
       expect(task.position).to be nil
     end
   end
