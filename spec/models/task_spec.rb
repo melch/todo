@@ -24,7 +24,7 @@ RSpec.describe Task, type: :model do
     it 'should return non-completed attributes as is' do
       attrs = { foo: :bar }
       transmorgrified = described_class.transmorgrify_completed(attrs)
-      expect(transmorgrified).to be attrs
+      expect(transmorgrified).to include(attrs)
     end
 
     it 'should turn completed "1" to completed_at Time.now' do
@@ -32,7 +32,7 @@ RSpec.describe Task, type: :model do
       now = Time.now
       Timecop.freeze(now) do
         transmorgrified = described_class.transmorgrify_completed(attrs)
-        expect(transmorgrified).to eq(completed_at: now, pass: :through)
+        expect(transmorgrified).to include(completed_at: now, pass: :through)
       end
     end
 
@@ -41,7 +41,7 @@ RSpec.describe Task, type: :model do
       now = Time.now
       Timecop.freeze(now) do
         transmorgrified = described_class.transmorgrify_completed(attrs)
-        expect(transmorgrified).to eq(completed_at: now, pass: :through)
+        expect(transmorgrified).to include(completed_at: now, pass: :through)
       end
     end
 
@@ -50,14 +50,14 @@ RSpec.describe Task, type: :model do
       now = Time.now
       Timecop.freeze(now) do
         transmorgrified = described_class.transmorgrify_completed(attrs)
-        expect(transmorgrified).to eq(completed_at: now, pass: :through)
+        expect(transmorgrified).to include(completed_at: now, pass: :through)
       end
     end
 
     it 'should turn completed "0" to completed_at nil' do
       attrs = { completed: '0' }
       transmorgrified = described_class.transmorgrify_completed(attrs)
-      expect(transmorgrified).to eq(completed_at: nil)
+      expect(transmorgrified).to include(completed_at: nil)
     end
   end
 
@@ -106,15 +106,35 @@ RSpec.describe Task, type: :model do
   describe '#update_with_side_effects' do
     it 'should assign position if not completed' do
       task = described_class.create!(name: "update me", position: 3)
-      expect(described_class.max_position).to eq(3)
       updated_task = task.update_with_side_effects(name: 'still not done')
-      expect(updated_task.position).to eq(4)
+      expect(updated_task.reload.position).to eq(3)
     end
 
     it 'should clear position if completed' do
       task = described_class.create!(name: "update me", position: 1)
       updated_task = task.update_with_side_effects(completed: '1')
-      expect(updated_task.position).to be nil
+      expect(updated_task.reload.position).to be nil
+    end
+
+    it 'should shift position of other tasks if position is already taken' do
+      old_first = described_class.create!(name: "first psot!1", position: 1)
+      old_second = described_class.create!(name: "interesting dialogue", position: 2)
+
+      task = described_class.create!(name: "update me")
+      task.update_with_side_effects(position: 1)
+      expect(task.position).to eq 1
+      expect(old_first.reload.position).to eq 2
+      expect(old_second.reload.position).to eq 3
+    end
+
+    it 'should not shift position of other tasks if task is complete' do
+      old_first = described_class.create!(name: "first psot!1", position: 1)
+      old_second = described_class.create!(name: "interesting dialogue", position: 2)
+
+      task = described_class.create!(name: "update me", position: 1)
+      task.update_with_side_effects(position: 1, completed: true)
+      expect(old_first.position).to eq 1
+      expect(old_second.position).to eq 2
     end
   end
 end

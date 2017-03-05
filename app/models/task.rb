@@ -13,16 +13,53 @@ class Task < ApplicationRecord
     !completed_at.nil?
   end
 
-  def update_with_side_effects(attributes)
-    assign_attributes(self.class.transmorgrify_completed(attributes))
-    self.position = next_position
-    save!
+  def update_with_side_effects(attrs)
+    transaction do
+      if update_from_attributes(attrs)
+        if position && (id && self.class.where(position: position).where.not(id: id).any?)
+          self.class.where("position >= ?", position).where.not(id: id).each do |other_task|
+            other_task.update(position: other_task.position + 1)
+          end
+        end
+      end
+    end
     self
   end
 
-  def self.new_with_side_effects(attributes)
-    task = new(transmorgrify_completed(attributes))
-    task.position = task.send(:next_position)
+  def update_from_attributes(attrs)
+    self.completed_at = new_completed_at(attrs[:completed])
+    self.position = new_position(attrs)
+
+    save
+  end
+
+  def new_position(attrs)
+    if attrs[:completed]
+      nil
+    else
+      position || attrs[:position] || self.class.max_position + 1
+    end
+  end
+  private :new_position
+
+  def new_completed_at(completed_attr)
+    if completed_attr == '1' || completed_attr == true
+      Time.now
+    elsif completed_attr == '0'
+      nil
+    end
+  end
+
+  def self.new_with_side_effects(attrs)
+    task = new(transmorgrify_completed(attrs))
+    if position = attrs[:position]
+      where("position >= ?", position).all.each do |other_task|
+        other_task.update(position: other_task.position + 1)
+      end
+      task.position = position
+    else
+      task.position = task.send(:next_position)
+    end
     task
   end
 
@@ -49,17 +86,23 @@ class Task < ApplicationRecord
     end
   end
 
-  def self.transmorgrify_completed(attributes)
-    if attributes
-      completed = attributes.delete(:completed)
+  def self.transmorgrify_completed(attrs)
+    if attrs
+      completed = attrs.delete(:completed)
 
       if completed == '1' || completed == true
-        attributes[:completed_at] = Time.now
+        attrs[:completed_at] = Time.now
       elsif completed == '0'
-        attributes[:completed_at] = nil
+        attrs[:completed_at] = nil
+      end
+
+      if completed
+        attrs[:position] = nil
+      else
+        attrs[:position] ||= max_position + 1
       end
     end
 
-    attributes
+    attrs
   end
 end
