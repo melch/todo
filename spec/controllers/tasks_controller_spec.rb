@@ -20,7 +20,7 @@ RSpec.describe TasksController, type: :controller do
             name: "Write a Todo App",
           },
         }
-        post :create, params
+        post :create, params: params
         expect(response).to redirect_to(:tasks)
       end.to change { Task.count }.by(1)
     end
