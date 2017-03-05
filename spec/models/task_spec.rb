@@ -45,6 +45,15 @@ RSpec.describe Task, type: :model do
       end
     end
 
+    it 'should turn completed true to completed_at Time.now' do
+      attrs = { completed: true, pass: :through }
+      now = Time.now
+      Timecop.freeze(now) do
+        transmorgrified = described_class.transmorgrify_completed(attrs)
+        expect(transmorgrified).to eq(completed_at: now, pass: :through)
+      end
+    end
+
     it 'should turn completed "0" to completed_at nil' do
       attrs = { completed: '0' }
       transmorgrified = described_class.transmorgrify_completed(attrs)
@@ -104,7 +113,6 @@ RSpec.describe Task, type: :model do
 
     it 'should clear position if completed' do
       task = Task.create!(name: "update me", position: 1)
-      # TODO: accept true for completed also
       updated_task = task.update_with_side_effects(completed: '1')
       expect(updated_task.position).to be nil
     end
