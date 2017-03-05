@@ -15,62 +15,15 @@ class Task < ApplicationRecord
 
   def update_with_side_effects(attrs)
     transaction do
-      raise "Halt transaction for failed save" unless update_from_attributes(attrs)
+      self.completed_at = new_completed_at(attrs[:completed])
+      self.position = new_position(attrs)
 
-      push_other_positions
+      save!
+
+      push_other_positions!
     end
     self
   end
-
-  def push_other_positions
-    return unless position_overlap?
-
-    tasks_to_push.each do |other_task|
-      other_task.update(position: other_task.position + 1)
-    end
-  end
-
-  def position_overlap?
-    position && self.class.where(position: position).where.not(id: id).any?
-  end
-
-  def tasks_to_push
-    self.class.where("position >= ?", position).where.not(id: id)
-  end
-
-  def update_from_attributes(attrs)
-    self.completed_at = new_completed_at(attrs[:completed])
-    self.position = new_position(attrs)
-
-    save
-  end
-
-  def new_position(attrs)
-    if attrs[:completed]
-      nil
-    else
-      position || attrs[:position] || self.class.max_position + 1
-    end
-  end
-  private :new_position
-
-  def new_completed_at(completed_attr)
-    if completed_attr == '1' || completed_attr == true
-      Time.now
-    elsif completed_attr == '0'
-      nil
-    end
-  end
-  private :new_completed_at
-
-  def next_position
-    if completed
-      nil
-    else
-      self.class.max_position + 1
-    end
-  end
-  private :next_position
 
   def self.display_list(show_completed = false)
     order("position IS NULL, position DESC, created_at DESC")
@@ -84,5 +37,47 @@ class Task < ApplicationRecord
     else
       highest_task.position
     end
+  end
+
+  private
+
+  def next_position
+    if completed
+      nil
+    else
+      self.class.max_position + 1
+    end
+  end
+
+  def new_completed_at(completed_attr)
+    if completed_attr == '1' || completed_attr == true
+      Time.now
+    elsif completed_attr == '0'
+      nil
+    end
+  end
+
+  def new_position(attrs)
+    if attrs[:completed]
+      nil
+    else
+      position || attrs[:position] || self.class.max_position + 1
+    end
+  end
+
+  def push_other_positions!
+    return unless position_overlap?
+
+    tasks_to_push.each do |other_task|
+      other_task.update!(position: other_task.position + 1)
+    end
+  end
+
+  def position_overlap?
+    position && self.class.where(position: position).where.not(id: id).any?
+  end
+
+  def tasks_to_push
+    self.class.where("position >= ?", position).where.not(id: id)
   end
 end
