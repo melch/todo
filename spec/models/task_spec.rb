@@ -105,14 +105,14 @@ RSpec.describe Task, type: :model do
 
   describe '#update_with_side_effects' do
     it 'should assign position if not completed' do
-      task = Task.create!(name: "update me", position: 3)
+      task = described_class.create!(name: "update me", position: 3)
       expect(described_class.max_position).to eq(3)
       updated_task = task.update_with_side_effects(name: 'still not done')
       expect(updated_task.position).to eq(4)
     end
 
     it 'should clear position if completed' do
-      task = Task.create!(name: "update me", position: 1)
+      task = described_class.create!(name: "update me", position: 1)
       updated_task = task.update_with_side_effects(completed: '1')
       expect(updated_task.position).to be nil
     end
