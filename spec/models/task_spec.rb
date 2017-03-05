@@ -14,53 +14,6 @@ RSpec.describe Task, type: :model do
     expect(task.name).to eq(nil)
   end
 
-  describe '.transmorgrify_completed' do
-    it 'should handle nil' do
-      attrs = nil
-      transmorgrified = described_class.transmorgrify_completed(attrs)
-      expect(transmorgrified).to be nil
-    end
-
-    it 'should return non-completed attributes as is' do
-      attrs = { foo: :bar }
-      transmorgrified = described_class.transmorgrify_completed(attrs)
-      expect(transmorgrified).to include(attrs)
-    end
-
-    it 'should turn completed "1" to completed_at Time.now' do
-      attrs = { completed: '1', pass: :through }
-      now = Time.now
-      Timecop.freeze(now) do
-        transmorgrified = described_class.transmorgrify_completed(attrs)
-        expect(transmorgrified).to include(completed_at: now, pass: :through)
-      end
-    end
-
-    it 'should turn completed true to completed_at Time.now' do
-      attrs = { completed: true, pass: :through }
-      now = Time.now
-      Timecop.freeze(now) do
-        transmorgrified = described_class.transmorgrify_completed(attrs)
-        expect(transmorgrified).to include(completed_at: now, pass: :through)
-      end
-    end
-
-    it 'should turn completed true to completed_at Time.now' do
-      attrs = { completed: true, pass: :through }
-      now = Time.now
-      Timecop.freeze(now) do
-        transmorgrified = described_class.transmorgrify_completed(attrs)
-        expect(transmorgrified).to include(completed_at: now, pass: :through)
-      end
-    end
-
-    it 'should turn completed "0" to completed_at nil' do
-      attrs = { completed: '0' }
-      transmorgrified = described_class.transmorgrify_completed(attrs)
-      expect(transmorgrified).to include(completed_at: nil)
-    end
-  end
-
   it 'should remove position when completed' do
     task = described_class.create!(name: "delete me", position: 1)
     task.destroy
@@ -86,20 +39,6 @@ RSpec.describe Task, type: :model do
         completed_at: Time.now
       )
       expect(described_class.max_position).to eq 2
-    end
-  end
-
-  describe '#new_with_side_effects' do
-    let(:base_attrs) { { name: "make me" } }
-    it 'should assign position if not completed' do
-      task = described_class.new_with_side_effects(base_attrs)
-      expect(task.position).to eq(described_class.max_position + 1)
-    end
-
-    it 'should clear position if completed' do
-      completed_attrs = base_attrs.merge(completed: "1")
-      task = described_class.new_with_side_effects(completed_attrs)
-      expect(task.position).to be nil
     end
   end
 

@@ -15,15 +15,27 @@ class Task < ApplicationRecord
 
   def update_with_side_effects(attrs)
     transaction do
-      if update_from_attributes(attrs)
-        if position && (id && self.class.where(position: position).where.not(id: id).any?)
-          self.class.where("position >= ?", position).where.not(id: id).each do |other_task|
-            other_task.update(position: other_task.position + 1)
-          end
-        end
-      end
+      raise "Halt transaction for failed save" unless update_from_attributes(attrs)
+
+      push_other_positions
     end
     self
+  end
+
+  def push_other_positions
+    return unless position_overlap?
+
+    tasks_to_push.each do |other_task|
+      other_task.update(position: other_task.position + 1)
+    end
+  end
+
+  def position_overlap?
+    position && self.class.where(position: position).where.not(id: id).any?
+  end
+
+  def tasks_to_push
+    self.class.where("position >= ?", position).where.not(id: id)
   end
 
   def update_from_attributes(attrs)
@@ -49,19 +61,7 @@ class Task < ApplicationRecord
       nil
     end
   end
-
-  def self.new_with_side_effects(attrs)
-    task = new(transmorgrify_completed(attrs))
-    if position = attrs[:position]
-      where("position >= ?", position).all.each do |other_task|
-        other_task.update(position: other_task.position + 1)
-      end
-      task.position = position
-    else
-      task.position = task.send(:next_position)
-    end
-    task
-  end
+  private :new_completed_at
 
   def next_position
     if completed
@@ -84,25 +84,5 @@ class Task < ApplicationRecord
     else
       highest_task.position
     end
-  end
-
-  def self.transmorgrify_completed(attrs)
-    if attrs
-      completed = attrs.delete(:completed)
-
-      if completed == '1' || completed == true
-        attrs[:completed_at] = Time.now
-      elsif completed == '0'
-        attrs[:completed_at] = nil
-      end
-
-      if completed
-        attrs[:position] = nil
-      else
-        attrs[:position] ||= max_position + 1
-      end
-    end
-
-    attrs
   end
 end

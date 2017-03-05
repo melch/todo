@@ -9,9 +9,7 @@ class TasksController < ApplicationController
   end
 
   def create
-    @task = Task.new_with_side_effects(article_params)
-
-    if @task.save
+    if Task.new.update_from_attributes(article_params)
       redirect_to :tasks
     else
       render :new
