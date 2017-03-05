@@ -5,7 +5,7 @@ class TasksController < ApplicationController
   end
 
   def new
-    @task = Task.new
+    @task = Task.new(position: Task.next_position)
   end
 
   def create

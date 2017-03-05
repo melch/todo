@@ -39,13 +39,17 @@ class Task < ApplicationRecord
     end
   end
 
+  def self.next_position
+    max_position + 1
+  end
+
   private
 
   def next_position
     if completed
       nil
     else
-      self.class.max_position + 1
+      self.class.next_position
     end
   end
 
@@ -61,7 +65,7 @@ class Task < ApplicationRecord
     if attrs[:completed]
       nil
     else
-      position || attrs[:position] || self.class.max_position + 1
+      position || attrs[:position] || self.class.next_position
     end
   end
 

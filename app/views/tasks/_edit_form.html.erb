@@ -18,6 +18,11 @@
   </div>
 
   <div class='form-group'>
+    <%= f.label :position %>
+    <%= f.text_field :position, class: 'form-control' %>
+  </div>
+
+  <div class='form-group'>
     <div class="form-check">
       <%= f.check_box :completed, class: 'checkbox' %>
       <%= f.label :completed, class: 'checkbox' %>
