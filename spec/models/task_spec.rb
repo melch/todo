@@ -14,36 +14,6 @@ RSpec.describe Task, type: :model do
     expect(task.name).to eq(nil)
   end
 
-  describe '.new_from_form' do
-    it 'should set completed_at from checkbox' do
-      now = Time.now
-      Timecop.freeze(now) do
-        new_task = described_class.new_from_form(completed: '1')
-        expect(new_task.completed_at).to eq(now)
-      end
-    end
-
-    it 'should handle nil attributes' do
-      now = Time.now
-      Timecop.freeze(now) do
-        new_task = described_class.new_from_form
-        expect(new_task.completed_at).to be_nil
-      end
-    end
-  end
-
-  describe '.update_from_form' do
-    it 'should set from checkbox values' do
-      updated_task = task.update_from_form(completed: '0')
-      expect(updated_task.completed_at).to be nil
-    end
-
-    it 'should return the same type' do
-      updated_task = task.update_from_form(completed: '0')
-      expect(updated_task.is_a?(described_class)).to be true
-    end
-  end
-
   describe '.transmorgrify_completed' do
     it 'should handle nil' do
       attrs = nil

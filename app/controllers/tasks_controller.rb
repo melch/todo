@@ -9,7 +9,7 @@ class TasksController < ApplicationController
   end
 
   def create
-    @task = Task.new_from_form(article_params)
+    @task = Task.new_with_side_effects(article_params)
 
     if @task.save
       redirect_to :tasks
@@ -20,7 +20,7 @@ class TasksController < ApplicationController
 
   def update
     @task = Task.find(params[:id])
-    @task.update_from_form(article_params)
+    @task.update_with_side_effects(article_params)
 
     if @task.save
       redirect_to :tasks
