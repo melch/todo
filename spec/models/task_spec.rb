@@ -60,16 +60,23 @@ RSpec.describe Task, type: :model do
       expect(task.completed_at).to eq nil
     end
 
-    it 'should assign position if not completed' do
-      task = described_class.create!(name: "update me", position: 3)
-      updated_task = task.update_with_side_effects(name: 'still not done')
-      expect(updated_task.reload.position).to eq(3)
-    end
-
     it 'should clear position if completed' do
       task = described_class.create!(name: "update me", position: 1)
-      updated_task = task.update_with_side_effects(completed: '1')
-      expect(updated_task.reload.position).to be nil
+      task.update_with_side_effects(completed: '1')
+      expect(task.reload.position).to be nil
+    end
+
+    it 'should set position if passed and not completed' do
+      task = described_class.create!(name: "update me")
+      task.update_with_side_effects(name: 'still not done', position: 42, completed: "0")
+      expect(task.reload.position).to eq(42)
+    end
+
+    it 'should assign position if not passed and not completed' do
+      task = described_class.create!(name: "update me")
+      next_position = described_class.next_position
+      task.update_with_side_effects(name: 'still not done')
+      expect(task.reload.position).to eq(next_position)
     end
 
     it 'should shift position of other tasks if position is already taken' do

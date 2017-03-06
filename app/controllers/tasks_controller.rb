@@ -41,6 +41,6 @@ class TasksController < ApplicationController
   private
 
   def article_params
-    params.require(:task).permit(:name, :description, :completed)
+    params.require(:task).permit(:name, :description, :completed, :position)
   end
 end

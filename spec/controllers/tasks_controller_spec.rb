@@ -14,12 +14,13 @@ RSpec.describe TasksController, type: :controller do
     it "returns http success" do
       description = "then iterate on it"
       name = "Write a Todo App"
-      position = Task.next_position
+      position = "37"
       expect do
         params = {
           task: {
             created: false,
             description: description,
+            position: position,
             name: name,
           },
         }
@@ -29,7 +30,7 @@ RSpec.describe TasksController, type: :controller do
       task = Task.last
       expect(task.description).to eq description
       expect(task.name).to eq name
-      expect(task.position).to eq position
+      expect(task.position).to eq position.to_i
       expect(task.completed_at).to eq nil
     end
   end
