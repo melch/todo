@@ -1,5 +1,11 @@
 <div class='container'>
   <h1>Edit Your ToDo Item</h1>
 
-  <%= render partial: 'edit_form', locals: { task: @task, path: task_path(@task), method: :put } %>
+  <%= render partial: 'edit_form', locals: { task: @task, path: task_path(@task), method: :patch } %>
+
+  <%= link_to 'Delete',
+    task_path(@task),
+    method: :delete,
+    data: { confirm: 'Permanently Destroy This Todo Item?' }
+  %>
 </div>

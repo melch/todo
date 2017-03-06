@@ -1,8 +1,8 @@
-<% if @task.errors.any? %>
+<% if task.errors.any? %>
   <div class="alert alert-danger" role="alert">
     <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
     <span class="sr-only">Error:</span>
-    <%= @task.errors.full_messages.join(', ') %>
+    <%= task.errors.full_messages.join(', ') %>
   </div>
 <% end %>
 
