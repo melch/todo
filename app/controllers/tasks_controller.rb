@@ -1,7 +1,7 @@
 class TasksController < ApplicationController
   def index
-    @show_completed = !params[:show_completed].nil?
-    @tasks = Task.display_list.limit(20)
+    show_completed = !params[:show_completed].nil?
+    @tasks = Task.display_list(show_completed).limit(20)
   end
 
   def new
