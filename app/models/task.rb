@@ -66,7 +66,7 @@ class Task < ApplicationRecord
     if attrs[:completed] == "1" || attrs[:completed] == true
       nil
     else
-      position || attrs[:position] || self.class.next_position
+      attrs[:position] || position
     end
   end
 

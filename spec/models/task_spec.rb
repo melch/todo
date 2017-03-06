@@ -25,7 +25,7 @@ RSpec.describe Task, type: :model do
       expect(described_class.max_position).to eq 0
     end
 
-    it 'should return 0 if no tasks have positions' do
+    it 'should return 1 if no tasks have positions' do
       described_class.create!(name: "first psot!1", position: 1)
       expect(described_class.max_position).to eq 1
     end
@@ -43,10 +43,9 @@ RSpec.describe Task, type: :model do
   end
 
   describe '#update_with_side_effects' do
-    it 'should set name, description, and completed at' do
+    it 'should set attributes passed' do
       name = "Write a Todo App"
       description = "then iterate on it"
-      position = Task.next_position
       attrs = {
         description: description,
         name: name,
@@ -54,7 +53,6 @@ RSpec.describe Task, type: :model do
       }
 
       task = described_class.new.update_with_side_effects(attrs)
-      expect(task.position).to eq position
       expect(task.name).to eq name
       expect(task.description).to eq description
       expect(task.completed_at).to eq nil
@@ -70,13 +68,6 @@ RSpec.describe Task, type: :model do
       task = described_class.create!(name: "update me")
       task.update_with_side_effects(name: 'still not done', position: 42, completed: "0")
       expect(task.reload.position).to eq(42)
-    end
-
-    it 'should assign position if not passed and not completed' do
-      task = described_class.create!(name: "update me")
-      next_position = described_class.next_position
-      task.update_with_side_effects(name: 'still not done')
-      expect(task.reload.position).to eq(next_position)
     end
 
     it 'should shift position of other tasks if position is already taken' do
