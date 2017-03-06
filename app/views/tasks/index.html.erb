@@ -1,3 +1,26 @@
+<% completed_key = 'task[completed]' %>
+<% task_id_name = 'value' %>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("input:checkbox[name='completed']").change(function() {
+      if($(this).is(":checked")) {
+        $.ajax({
+          url: "<%= task_path('__id__') %>".replace('__id__', $(this).attr('<%= task_id_name%>')),
+          type: 'PATCH',
+          data: { "<%= completed_key %>":"1", "show_completed":"<%= @show_completed %>" }
+        });
+      } else {
+        $.ajax({
+          url: "<%= task_path('__id__') %>".replace('__id__', $(this).attr('<%= task_id_name%>')),
+          type: 'PATCH',
+          data: { "<%= completed_key %>":"0", "show_completed":"<%= @show_completed %>" }
+        });
+      }
+    });
+  });
+</script>
+
+
 <div class='container'>
   <h1>Things To Do</h1>
 
@@ -20,10 +43,7 @@
     <% @tasks.each do |task| %>
       <tr>
         <td>
-          <%= form_for :task, url: task_path(task), method: :patch do |f| %>
-            <%= f.check_box :completed, { checked: !!task.completed_at } %>
-            <%= f.submit %>
-          <% end %>
+          <%= check_box_tag :completed, task.id, !!task.completed_at %>
         </td>
         <td>
           <%= task.position %>

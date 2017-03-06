@@ -1,7 +1,7 @@
 class TasksController < ApplicationController
   def index
-    show_completed = !params[:show_completed].nil?
-    @tasks = Task.display_list(show_completed).limit(20)
+    @show_completed = !params[:show_completed].nil?
+    @tasks = Task.display_list(@show_completed).limit(20)
   end
 
   def new
@@ -21,7 +21,7 @@ class TasksController < ApplicationController
     @task.update_with_side_effects(article_params)
 
     if @task.save
-      redirect_to :tasks
+      redirect_to action: :index, show_completed: params[:show_completed]
     else
       render plain: params.inspect
     end
