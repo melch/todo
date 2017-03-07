@@ -6,7 +6,7 @@
   </div>
 <% end %>
 
-<%= form_for :task, url: path, method: method do |f| %>
+<%= form_for task, url: path, method: method do |f| %>
   <div class='form-group'>
     <%= f.label :name %>
     <%= f.text_field :name, autofocus: true, class: 'form-control' %>
