@@ -10,11 +10,13 @@
   <hr>
 
   <h2>Subtasks</h2>
-  <%= @task.subtasks.inspect %>
+  <% @task.subtasks.each do |subtask| %>
+    <%= render partial: 'subtasks/edit_form', locals: { subtask: subtask } %>
+  <% end %>
   <br>
 
   <%= link_to 'Create Subtask',
-    new_subtask_url(task_id: @task.id),
+    new_subtask_path(task_id: @task.id),
     method: :get
   %>
 </div>

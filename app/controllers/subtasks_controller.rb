@@ -17,6 +17,18 @@ class SubtasksController < ApplicationController
     end
   end
 
+  def update
+    @subtask = Subtask.find(params[:id])
+    # @subtask.update_with_side_effects(article_params)
+    @subtask.attributes = subtask_params.except(:completed)
+
+    if @subtask.save
+      redirect_to edit_task_path(@subtask.task_id)
+    else
+      render plain: params.inspect
+    end
+  end
+
   private
 
   def subtask_params
