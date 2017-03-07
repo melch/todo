@@ -11,4 +11,10 @@
 
   <h2>Subtasks</h2>
   <%= @task.subtasks.inspect %>
+  <br>
+
+  <%= link_to 'Create Subtask',
+    new_subtask_url(task_id: @task.id),
+    method: :get
+  %>
 </div>
