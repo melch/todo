@@ -1,4 +1,6 @@
 class Task < ApplicationRecord
+  has_many :subtasks
+
   validates :name, uniqueness: true
 
   scope :show_completed, ->(show_completed) {
